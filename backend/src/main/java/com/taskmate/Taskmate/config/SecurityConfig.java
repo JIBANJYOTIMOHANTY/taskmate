@@ -3,6 +3,7 @@ package com.taskmate.Taskmate.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -16,7 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.taskmate.Taskmate.filter.JwtFilter;
-import com.taskmate.Taskmate.services.JwtService;
 import com.taskmate.Taskmate.services.UserService;
 
 @Configuration
@@ -24,6 +24,7 @@ import com.taskmate.Taskmate.services.UserService;
 @EnableMethodSecurity
 public class SecurityConfig {
     @Autowired
+    @Lazy
     private JwtFilter jwtFilter;
     
     @Bean
@@ -31,13 +32,11 @@ public class SecurityConfig {
         return new UserService();
     }
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/**")
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/api/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
