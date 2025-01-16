@@ -23,4 +23,9 @@ public class UserController {
         return userService.addUser(user);
         // return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @PostMapping("/loginUser")
+    public ResponseEntity<String> loginUser(@RequestBody User user){
+        return userService.loginUser(user);
+    }
 }
