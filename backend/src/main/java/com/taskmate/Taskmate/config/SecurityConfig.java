@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.taskmate.Taskmate.filter.JwtFilter;
 import com.taskmate.Taskmate.services.UserService;
@@ -24,6 +25,7 @@ import com.taskmate.Taskmate.services.UserService;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequestMapping("/auth/api")
 public class SecurityConfig {
     @Autowired
     @Lazy

@@ -1,8 +1,11 @@
 package com.taskmate.Taskmate.services;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -17,8 +20,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+
 import com.taskmate.Taskmate.entity.User;
 import com.taskmate.Taskmate.repository.UserRepository;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -46,7 +53,7 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("Username not fount with this name : " + username));
     }
 
-    public void addLogoutToken(String token) {
+    public void LogoutToken(String token) {
         logoutToken.add(token);
     }
 
@@ -81,6 +88,43 @@ public class UserService implements UserDetailsService {
         catch(Exception e){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    public ResponseEntity<List<User>> getAllUsers(@RequestHeader("Authorization") String authorization){
+        String token = authorization.substring(7);
+        String username = jwtService.extractUsername(token);
+
+        UserDetails userDetails = loadUserByUsername(username);
+        
+        if(jwtService.validateToken(token, userDetails)){
+            return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    public ResponseEntity<String> logOut(@RequestHeader("Authorization") String authorization){
+        // String token = authorization.substring(7);
+        String username = null;
+        UserDetails userDetails = null;
+        String authHeader = authorization;
+        String token = null;
+
+        if(authHeader != null && authHeader.startsWith("Bearer")){
+            token = authHeader.substring(7);
+            username = jwtService.extractUsername(token);
+            userDetails = loadUserByUsername(username);
+        }
+        
+        if(jwtService.validateToken(token, userDetails)){
+            LogoutToken(token);
+            return new ResponseEntity<>("!!!You are loggedout successfully!!!",HttpStatus.OK);
+        } else {
+
+            return new ResponseEntity<>("!!!You are not loggedin!!!",HttpStatus.UNAUTHORIZED);
+        }
+        
     }
 
 }

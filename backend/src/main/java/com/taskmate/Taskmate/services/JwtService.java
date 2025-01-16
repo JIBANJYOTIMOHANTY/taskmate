@@ -3,6 +3,8 @@ package com.taskmate.Taskmate.services;
 import java.util.*;
 import java.util.function.Function;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +20,9 @@ import io.jsonwebtoken.security.Keys;
 public class JwtService {
     private static final String SECRET = "ahsffbcbfguyrfyueoqrquwcbfggbglfqabvaereiuyqzmafcakbhfaskbhkfkhfkhbkjlfsgfbafbhafbgfaskfasajksfqwertyujhbgfdsazx";
 
+    @Autowired
+    @Lazy
+    private UserService userService;
     public String generatetoken(String username){
         Map<String, Objects> claims = new HashMap<>();
         return Jwts.builder().
@@ -61,6 +66,6 @@ public class JwtService {
 
     public Boolean validateToken(String token, UserDetails userDetails){
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token) );
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token) && !userService.isLogoutTokenExpired(token) );
     }
 }

@@ -46,4 +46,12 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public Integer setId(Integer id){
+        return this.id = id;
+    }
+
+    public Integer getId(){
+        return this.id;
+    }
 }
