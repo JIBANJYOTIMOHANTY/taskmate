@@ -70,7 +70,7 @@ public class UserService implements UserDetailsService {
     }
 
     public ResponseEntity<String> loginUser(@RequestBody User user){
-        // try{
+        try{
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
             if(authentication.isAuthenticated()){
                 String token = jwtService.generatetoken(user.getUsername());
@@ -82,10 +82,10 @@ public class UserService implements UserDetailsService {
                 System.out.println(user.getPassword());
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-        // }
-        // catch(Exception e){
-            // return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        // }
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
 }
