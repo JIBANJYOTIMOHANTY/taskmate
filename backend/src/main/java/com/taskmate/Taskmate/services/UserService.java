@@ -74,12 +74,9 @@ public class UserService implements UserDetailsService {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
             if(authentication.isAuthenticated()){
                 String token = jwtService.generatetoken(user.getUsername());
-                System.out.println("hello");
                 return new ResponseEntity<>(token, HttpStatus.OK);
             }
             else{
-                System.out.println(user.getUsername());
-                System.out.println(user.getPassword());
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
         }
